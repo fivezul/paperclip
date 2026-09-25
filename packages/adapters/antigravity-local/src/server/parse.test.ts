@@ -1,0 +1,10 @@
+import { describe, expect, it } from "vitest";
+import { parseAntigravityJsonl } from "./parse.js";
+import { parseAntigravityModelsOutput } from "./models.js";
+import { buildAntigravityArgs } from "./execute.js";
+describe("antigravity_local", () => {
+  it("parses models", () => expect(parseAntigravityModelsOutput("gemini-3.8-flash-medium   Gemini 3.8 Flash (Medium)\nclaude-sonnet-4-6  Claude Sonnet 4.6")).toEqual([{ id: "gemini-3.8-flash-medium", label: "Gemini 3.8 Flash (Medium)" }, { id: "claude-sonnet-4-6", label: "Claude Sonnet 4.6" }]));
+  it("parses NDJSON, conversation and usage while ignoring malformed lines", () => expect(parseAntigravityJsonl('{"type":"init","conversation_id":"c1"}\nbad\n{"type":"step_update","text":"Hi"}\n{"type":"result","status":"SUCCESS","usage":{"input_tokens":2,"output_tokens":3,"thinking_tokens":4,"cache_read_tokens":1,"total_tokens":10}}')).toMatchObject({ conversationId: "c1", status: "SUCCESS", summary: "Hi", inputTokens: 2, outputTokens: 3, thinkingTokens: 4, cacheReadTokens: 1, totalTokens: 10 }));
+  it("uses explicit conversation continuation and safe argument entries", () => expect(buildAntigravityArgs({ model: "m", effort: "high", dangerouslySkipPermissions: true, sandbox: true }, "hello; rm", "conv-1")).toEqual(["-p", "hello; rm", "--conversation", "conv-1", "--model", "m", "--output-format", "stream-json", "--effort", "high", "--dangerously-skip-permissions", "--sandbox"]));
+  it("captures error status", () => expect(parseAntigravityJsonl('{"type":"result","status":"ERROR","error":"boom"}')).toMatchObject({ status: "ERROR", errorMessage: "boom" }));
+});

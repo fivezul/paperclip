@@ -1285,6 +1285,8 @@ export function AgentConfigForm(props: AgentConfigFormProps) {
             ? kimiThinkingEffortOptions
             : adapterType === "pi_local"
               ? [{ id: "", label: "Auto" }, ...["off", "minimal", "low", "medium", "high", "xhigh"].map(id => ({ id, label: id }))]
+              : adapterType === "antigravity_local"
+                ? [{ id: "", label: "Auto" }, ...["low", "medium", "high"].map((id) => ({ id, label: id[0].toUpperCase() + id.slice(1) }))]
               : adapterType === "claude_local" || adapterType === "grok_local"
                 ? [{ id: "", label: "Auto" }, ...setupEfforts(adapterType, currentModelId).map((id) => ({
                     id,

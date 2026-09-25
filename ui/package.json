@@ -37,6 +37,7 @@
     "@lexical/link": "0.48.0",
     "@mdxeditor/editor": "^4.2.3",
     "@paperclipai/adapter-claude-local": "workspace:*",
+    "@paperclipai/adapter-antigravity-local": "workspace:*",
     "@paperclipai/adapter-codex-local": "workspace:*",
     "@paperclipai/adapter-cursor-cloud": "workspace:*",
     "@paperclipai/adapter-cursor-local": "workspace:*",

@@ -38,6 +38,7 @@
   "dependencies": {
     "@clack/prompts": "^1.7.0",
     "@paperclipai/adapter-claude-local": "workspace:*",
+    "@paperclipai/adapter-antigravity-local": "workspace:*",
     "@paperclipai/adapter-codex-local": "workspace:*",
     "@paperclipai/adapter-cursor-cloud": "workspace:*",
     "@paperclipai/adapter-cursor-local": "workspace:*",

@@ -60,6 +60,11 @@ export interface AdapterDisplayInfo {
 }
 
 const adapterDisplayMap: Record<string, AdapterDisplayInfo> = {
+  antigravity_local: {
+    label: "Antigravity",
+    description: "Google Antigravity CLI harness",
+    icon: Sparkles,
+  },
   acpx_local: {
     label: "ACPX (retired)",
     description: "Retired standalone ACPX adapter",

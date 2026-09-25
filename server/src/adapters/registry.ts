@@ -7,6 +7,8 @@ import {
   PAPERCLIP_RUNNER_PERMISSION_CAPABILITIES,
 } from "@paperclipai/adapter-utils";
 import type { AdapterLoginCapability } from "@paperclipai/adapter-utils";
+import { execute as antigravityExecute, testEnvironment as antigravityTestEnvironment, sessionCodec as antigravitySessionCodec, listAntigravityModels } from "@paperclipai/adapter-antigravity-local/server";
+import { agentConfigurationDoc as antigravityAgentConfigurationDoc, models as antigravityModels } from "@paperclipai/adapter-antigravity-local";
 import { runAdapterExecutionTargetShellCommand } from "@paperclipai/adapter-utils/execution-target";
 import {
   execute as claudeExecute,
@@ -196,6 +198,16 @@ The standalone ACPX adapter has been retired. Use:
 
 Paperclip keeps this tombstone registered so stale acpx_local rows fail clearly instead of falling back to the process adapter.
 `;
+
+const antigravityLocalAdapter: ServerAdapterModule = {
+  type: "antigravity_local", runtimeToolDelivery: "environment", execute: antigravityExecute,
+  testEnvironment: antigravityTestEnvironment, sessionCodec: antigravitySessionCodec,
+  sessionManagement: getAdapterSessionManagement("antigravity_local") ?? undefined,
+  models: antigravityModels, listModels: listAntigravityModels, refreshModels: listAntigravityModels, supportsLocalAgentJwt: true, supportsInstructionsBundle: false,
+  requiresMaterializedRuntimeSkills: false,
+  getRuntimeCommandSpec: (config) => ({ command: readConfiguredCommand(config, "agy"), detectCommand: readConfiguredCommand(config, "agy"), installCommand: null }),
+  agentConfigurationDoc: antigravityAgentConfigurationDoc,
+};
 
 // The Claude interactive login capability. Claude runs `claude setup-token` on a
 // real pseudo-terminal. The user pastes a browser code back into the flow. The
@@ -853,6 +865,7 @@ const pausedOverrides = new Set<string>();
 function registerBuiltInAdapters() {
   for (const adapter of [
     acpxLocalAdapter,
+    antigravityLocalAdapter,
     claudeLocalAdapter,
     codexLocalAdapter,
     paperclipRunnerAdapter,
