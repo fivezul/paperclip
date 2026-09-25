@@ -43,7 +43,10 @@ export async function execute(ctx: AdapterExecutionContext): Promise<AdapterExec
   return {
     exitCode: proc.exitCode, signal: proc.signal, timedOut: proc.timedOut,
     errorMessage: failed ? (parsed.errorMessage || proc.stderr.trim().split(/\r?\n/)[0] || `Antigravity ended with status ${parsed.status ?? proc.exitCode ?? "unknown"}`) : null,
-    usage: { inputTokens: parsed.inputTokens, outputTokens: parsed.outputTokens, cachedInputTokens: parsed.cacheReadTokens }, usageBasis: "per_run",
+    // Antigravity result usage is cumulative across the resumed conversation.
+    // The heartbeat service persists the raw snapshot and derives this run's
+    // delta from the previous snapshot for the same conversation.
+    usage: { inputTokens: parsed.inputTokens, outputTokens: parsed.outputTokens, cachedInputTokens: parsed.cacheReadTokens }, usageBasis: "session_cumulative",
     sessionId: resolvedId, sessionDisplayId: resolvedId,
     sessionParams: resolvedId ? { conversationId: resolvedId, cwd, remoteExecution: adapterExecutionTargetSessionIdentity(target) } : null,
     provider: "google", model: asString(ctx.config.model, DEFAULT_ANTIGRAVITY_LOCAL_MODEL), billingType: "subscription", costUsd: null,

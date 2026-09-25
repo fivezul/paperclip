@@ -24,7 +24,7 @@ describe("Antigravity execution", () => {
   it("persists conversation_id from a successful result", async () => {
     run.mockResolvedValue(processResult({ stdout: '{"type":"init","conversation_id":"conv-new"}\n{"type":"result","status":"SUCCESS","response":"done","usage":{"input_tokens":5,"output_tokens":2}}' }));
     const result = await execute(context());
-    expect(result).toMatchObject({ exitCode: 0, errorMessage: null, sessionId: "conv-new", summary: "done", usage: { inputTokens: 5, outputTokens: 2 } });
+    expect(result).toMatchObject({ exitCode: 0, errorMessage: null, sessionId: "conv-new", summary: "done", usage: { inputTokens: 5, outputTokens: 2 }, usageBasis: "session_cumulative" });
   });
 
   it("resumes the exact compatible conversation with --conversation, never --continue", async () => {

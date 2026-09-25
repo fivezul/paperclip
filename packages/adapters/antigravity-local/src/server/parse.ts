@@ -25,6 +25,9 @@ export function parseAntigravityJsonl(stdout: string): ParsedAntigravityJsonl {
     if (type === "step_update") {
       const delta = text(event.delta) || text(event.text) || text(event.content) || text(parseObject(event.step).delta);
       if (delta) deltas.push(delta);
+      // Antigravity may attach a cumulative conversation usage snapshot to
+      // step updates. Do not accumulate or persist it: the terminal result
+      // contains the authoritative cumulative snapshot for this conversation.
     }
     if (type === "result") {
       status = asString(event.status, "").toUpperCase() || status;
