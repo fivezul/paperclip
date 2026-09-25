@@ -7,6 +7,9 @@ import {
 import { resolveForcedKubernetesEnvironment } from "../lib/forced-kubernetes-environment";
 
 describe("supportsAdapterModelRefresh", () => {
+  it("supports Antigravity model refresh", () => {
+    expect(supportsAdapterModelRefresh("antigravity_local")).toBe(true);
+  });
   it("enables the model refresh action for Claude and Codex adapters", () => {
     expect(supportsAdapterModelRefresh("claude_local")).toBe(true);
     expect(supportsAdapterModelRefresh("codex_local")).toBe(true);

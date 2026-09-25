@@ -11,7 +11,13 @@ export async function testEnvironment(ctx: AdapterEnvironmentTestContext): Promi
   const cwd = resolveAdapterExecutionTargetCwd(target, asString(config.cwd, ""), process.cwd());
   const env = parseObject(config.env) as Record<string, string>;
   const timeoutSec = Math.max(1, asNumber(config.discoveryTimeoutSec, 20));
-  const version = await runAdapterExecutionTargetProcess(`agy-version-${Date.now()}`, target, command, ["--version"], { cwd, env, timeoutSec, graceSec: 3, onLog: async () => {} });
+  let version;
+  try {
+    version = await runAdapterExecutionTargetProcess(`agy-version-${Date.now()}`, target, command, ["--version"], { cwd, env, timeoutSec, graceSec: 3, onLog: async () => {} });
+  } catch (error) {
+    checks.push({ code: "antigravity_command_missing", level: "error", message: `Antigravity CLI is not executable: ${command}`, detail: error instanceof Error ? error.message : String(error), hint: "Install `agy`, then run `agy` interactively to sign in." });
+    return { adapterType: "antigravity_local", status: "fail", checks, testedAt: new Date().toISOString() };
+  }
   checks.push((version.exitCode ?? 1) === 0
     ? { code: "antigravity_command_ready", level: "info", message: `Antigravity CLI is executable: ${command}` }
     : { code: "antigravity_command_failed", level: "error", message: `Could not execute ${command}.`, detail: version.stderr.trim() || undefined });

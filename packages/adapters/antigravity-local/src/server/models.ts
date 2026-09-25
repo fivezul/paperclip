@@ -1,7 +1,5 @@
 export interface AntigravityModel { id: string; label: string }
-import { execFile } from "node:child_process";
-import { promisify } from "node:util";
-const execFileAsync = promisify(execFile);
+import { runChildProcess } from "@paperclipai/adapter-utils/server-utils";
 export function parseAntigravityModelsOutput(stdout: string): AntigravityModel[] {
   const result: AntigravityModel[] = [];
   for (const raw of stdout.split(/\r?\n/)) {
@@ -16,8 +14,11 @@ export function parseAntigravityModelsOutput(stdout: string): AntigravityModel[]
 
 export async function listAntigravityModels(): Promise<AntigravityModel[]> {
   try {
-    const { stdout } = await execFileAsync("agy", ["models"], { timeout: 20_000, windowsHide: true });
-    return parseAntigravityModelsOutput(stdout);
+    const result = await runChildProcess("antigravity-models", "agy", ["models"], {
+      cwd: process.cwd(), env: {}, timeoutSec: 20, graceSec: 3, onLog: async () => {},
+    });
+    if (result.timedOut || (result.exitCode ?? 1) !== 0) return [];
+    return parseAntigravityModelsOutput(result.stdout);
   } catch {
     return [];
   }

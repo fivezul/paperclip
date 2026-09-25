@@ -32,6 +32,7 @@ const workspacePaths = [
   "packages/db",
   "packages/shared",
   "packages/adapter-utils",
+  "packages/adapters/antigravity-local",
   "packages/adapters/claude-local",
   "packages/adapters/codex-local",
   "packages/adapters/hermes-gateway",
