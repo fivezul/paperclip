@@ -36,6 +36,17 @@ describe("Antigravity execution", () => {
     expect(args).not.toContain("--continue");
   });
 
+  it("configures unattended Paperclip execution without relying on extraArgs", async () => {
+    run.mockResolvedValue(processResult({ stdout: '{"type":"result","status":"SUCCESS","response":"done"}' }));
+    const executionContext = context() as unknown as { config: Record<string, unknown> };
+    executionContext.config.dangerouslySkipPermissions = true;
+    expect(executionContext.config.extraArgs).toBeUndefined();
+
+    await execute(executionContext as never);
+
+    expect(run.mock.calls[0]?.[3]).toContain("--dangerously-skip-permissions");
+  });
+
   it("does not resume a conversation saved for another workspace", async () => {
     run.mockResolvedValue(processResult({ stdout: '{"type":"result","status":"SUCCESS","conversation_id":"conv-new"}' }));
     await execute(context({ sessionId: "conv-old", sessionParams: { conversationId: "conv-old", cwd: "/different/workspace" } }));

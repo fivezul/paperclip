@@ -9,6 +9,8 @@ Runs the locally installed and authenticated Antigravity CLI (\`agy\`) once per 
 Sessions continue only with the explicit saved \`conversation_id\` and \`--conversation\`; they are never resumed with \`--continue\`.
 
 Fields: model, effort (low|medium|high), command, extraArgs, env, timeoutSec,
-dangerouslySkipPermissions, and sandbox. The project workspace supplies cwd.
+dangerouslySkipPermissions (disabled by default), and sandbox. Enabling unattended
+tool execution allows Antigravity to run requested tools without interactive approval.
+The project workspace supplies cwd.
 Authentication is inherited from the local CLI. Run \`agy\` interactively to sign in.
 `;

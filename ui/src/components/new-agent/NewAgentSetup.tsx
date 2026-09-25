@@ -335,6 +335,7 @@ function Setup({
       model:
         model || (brandType === "codex_local" ? DEFAULT_CODEX_LOCAL_MODEL : ""),
       thinkingEffort: effort,
+      dangerouslySkipPermissions: false,
       dangerouslyBypassSandbox: adapterType === "codex_local",
       envBindings: nextConnection?.env ?? {},
       ...(isRunner

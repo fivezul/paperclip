@@ -25,6 +25,10 @@ describe("antigravity_local", () => {
     });
   });
   it("uses explicit conversation continuation and safe argument entries", () => expect(buildAntigravityArgs({ model: "m", effort: "high", dangerouslySkipPermissions: true, sandbox: true }, "hello; rm", "conv-1")).toEqual(["-p", "hello; rm", "--conversation", "conv-1", "--model", "m", "--output-format", "stream-json", "--effort", "high", "--dangerously-skip-permissions", "--sandbox"]));
+  it("omits unattended permission bypass by default and when explicitly disabled", () => {
+    expect(buildAntigravityArgs({}, "hello", null)).not.toContain("--dangerously-skip-permissions");
+    expect(buildAntigravityArgs({ dangerouslySkipPermissions: false }, "hello", null)).not.toContain("--dangerously-skip-permissions");
+  });
   it("uses the required default model and never uses workspace-global continuation", () => {
     const args = buildAntigravityArgs({}, "hello", "conv-2");
     expect(args).toContain(DEFAULT_ANTIGRAVITY_LOCAL_MODEL);
